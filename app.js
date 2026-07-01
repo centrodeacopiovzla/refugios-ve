@@ -1,56 +1,38 @@
-document.addEventListener("DOMContentLoaded", async () => {
-    const contenedor = document.getElementById('contenedor-refugios');
-    const buscador = document.getElementById('buscador');
-    let datos = [];
+// La URL de tu Google Sheets publicada
+const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTe6z13jruVcXbhy2JUxz0dYlE1TFBSl50B55K-a3M5yYGLZCTagIfoZLJxIP-56DSSvLpsfUPIX5TZ/pub?gid=0&single=true&output=csv';
 
-    // 1. Cargar el JSON estático
+async function cargarDatos() {
     try {
-        const respuesta = await fetch('https://raw.githubusercontent.com/developerjosephutrera/directorio-ayuda-ve/main/datos.json');
-        datos = await respuesta.json();
+        const response = await fetch(CSV_URL);
+        const texto = await response.text();
+        
+        // Convertimos el CSV a un array de objetos
+        const filas = texto.split('\n').slice(1); // Saltamos la primera fila (encabezados)
+        
+        const datos = filas
+            .filter(fila => fila.trim() !== "") // Filtramos filas vacías
+            .map(fila => {
+                const [nombre, ubicacion, estado, municipio, agua, comida, medicinas, fecha_actualizacion] = fila.split(',');
+                return { 
+                    nombre: nombre?.trim(), 
+                    ubicacion: ubicacion?.trim(), 
+                    estado: estado?.trim(), 
+                    municipio: municipio?.trim(), 
+                    agua: agua?.trim(), 
+                    comida: comida?.trim(), 
+                    medicinas: medicinas?.trim(), 
+                    fecha_actualizacion: fecha_actualizacion?.trim() 
+                };
+            });
+
+        // Llamamos a tu función de renderizado que ya tenías hecha
         renderizar(datos);
+        
     } catch (error) {
-        contenedor.innerHTML = '<p class="text-red-500 text-center">Error al cargar la información. Intenta recargar la página.</p>';
+        console.error('Error al conectar con la base de datos:', error);
+        // Si hay error, podrías mostrar un mensaje en el HTML si quisieras
     }
+}
 
-    // 2. Función para pintar las tarjetas
-    function renderizar(lista) {
-        contenedor.innerHTML = '';
-        if (lista.length === 0) {
-            contenedor.innerHTML = '<p class="text-center">No se encontraron resultados.</p>';
-            return;
-        }
-
-        lista.forEach(item => {
-            // Lógica de colores para los semáforos
-            const colorAgua = item.necesidades.agua === 'critico' ? 'bg-red-500' : (item.necesidades.agua === 'moderado' ? 'bg-yellow-500' : 'bg-green-500');
-            const colorComida = item.necesidades.comida === 'critico' ? 'bg-red-500' : (item.necesidades.comida === 'moderado' ? 'bg-yellow-500' : 'bg-green-500');
-            const colorMed = item.necesidades.medicinas === 'critico' ? 'bg-red-500' : (item.necesidades.medicinas === 'moderado' ? 'bg-yellow-500' : 'bg-green-500');
-
-            const tarjeta = `
-                <div class="bg-white p-4 rounded-lg shadow border-l-4 border-blue-500">
-                    <h2 class="text-xl font-bold">${item.nombre}</h2>
-                    <p class="text-sm text-gray-600 mb-2">📍 ${item.estado}, ${item.municipio} - ${item.direccion}</p>
-                    
-                    <div class="flex gap-2 mt-3 text-xs font-bold text-white">
-                        <span class="px-2 py-1 rounded ${colorAgua}">Agua</span>
-                        <span class="px-2 py-1 rounded ${colorComida}">Comida</span>
-                        <span class="px-2 py-1 rounded ${colorMed}">Medicinas</span>
-                    </div>
-                    <p class="text-xs text-gray-400 mt-3 text-right">Actualizado: ${item.actualizado}</p>
-                </div>
-            `;
-            contenedor.innerHTML += tarjeta;
-        });
-    }
-
-    // 3. Lógica del buscador en tiempo real
-    buscador.addEventListener('input', (e) => {
-        const termino = e.target.value.toLowerCase();
-        const filtrados = datos.filter(item => 
-            item.estado.toLowerCase().includes(termino) || 
-            item.municipio.toLowerCase().includes(termino) ||
-            item.nombre.toLowerCase().includes(termino) // ¡Nueva línea agregada!
-        );
-        renderizar(filtrados);
-    });
-});
+// Ejecutamos la función al cargar la página
+cargarDatos();
