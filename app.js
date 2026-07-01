@@ -12,11 +12,11 @@ async function cargarDatos() {
             .filter(fila => fila.trim() !== "")
             .map(fila => {
                 // Estas son las 17 columnas que definiste, en el orden exacto
-                const [centro, estado, municipio, ubicacion, agua, comidaNP, comidaP, medicinas, tapabocas, carpas, cama, higiene, ropa, bolsas, mascota, silbato, papeleria] = fila.split(',');
+                const [centro, estado, municipio, ubicacion, agua, comidaNP, comidaP, medicinas, tapabocas, carpas, cama, higiene, ropa, bolsas, mascota, silbato, papeleria, fecha] = fila.split(',');
                 
                 return { 
                     centro, estado, municipio, ubicacion, agua, comidaNP, comidaP, medicinas, tapabocas, 
-                    carpas, cama, higiene, ropa, bolsas, mascota, silbato, papeleria, 
+                    carpas, cama, higiene, ropa, bolsas, mascota, silbato, papeleria, fecha,
                 };
             });
 
@@ -64,6 +64,7 @@ function renderizar(datos) {
                 <p>🐾 <b>Comida Mascota:</b> ${item.mascota}</p>
                 <p>📯 <b>Silbato:</b> ${item.silbato}</p>
                 <p>✏️ <b>Papelería:</b> ${item.papeleria}</p>
+                <p class="text-xs text-gray-400 mt-3 text-right font-italic">Actualizado: ${item.fecha || 'N/A'}</p>
             </div>
         `;
         contenedor.appendChild(tarjeta);
