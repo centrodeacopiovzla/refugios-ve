@@ -1,78 +1,64 @@
 const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTe6z13jruVcXbhy2JUxz0dYlE1TFBSl50B55K-a3M5yYGLZCTagIfoZLJxIP-56DSSvLpsfUPIX5TZ/pub?gid=0&single=true&output=csv';
 
-// 1. Variable global para guardar los datos y poder filtrarlos
 let datosGlobales = [];
 
 async function cargarDatos() {
     try {
         const response = await fetch(CSV_URL);
         const texto = await response.text();
-        
         const filas = texto.split('\n').slice(1);
         
-        // 2. Guardamos en la variable global
         datosGlobales = filas
             .filter(fila => fila.trim() !== "")
             .map(fila => {
-                const [nombre, ubicacion, estado, municipio, agua, comida, medicinas, fecha_actualizacion] = fila.split(',');
-                return { 
-                    nombre: nombre?.trim(), 
-                    ubicacion: ubicacion?.trim(), 
-                    estado: estado?.trim(), 
-                    municipio: municipio?.trim(), 
-                    agua: agua?.trim(), 
-                    comida: comida?.trim(), 
-                    medicinas: medicinas?.trim(), 
-                    fecha_actualizacion: fecha_actualizacion?.trim() 
-                };
+                const [Centro, Estado, Municipio, Ubicacion, Agua, ComidaNP, ComidaP, Medicinas, Tapabocas, Carpas, Cama, Higiene, Ropa, Bolsas, Mascota, Silbatos, Materiales] = fila.split(',');
+                return { Centro, Estado, Municipio, Ubicacion, Agua, ComidaNP, ComidaP, Medicinas, Tapabocas, Carpas, Cama, Higiene, Ropa, Bolsas, Mascota, Silbatos, Materiales };
             });
 
         renderizar(datosGlobales);
-        
     } catch (error) {
-        console.error('Error al conectar con la base de datos:', error);
-        document.getElementById('contenedor-refugios').innerHTML = '<p class="text-red-500 text-center font-bold">Error al cargar la información.</p>';
+        console.error('Error:', error);
     }
 }
 
-// 3. Lógica del buscador (se activa al escribir)
+// Buscador
 document.getElementById('buscador').addEventListener('input', (e) => {
     const termino = e.target.value.toLowerCase();
-    
-    // Filtramos los datos globales según el texto escrito
     const filtrados = datosGlobales.filter(item => 
-        item.nombre.toLowerCase().includes(termino) || 
-        item.estado.toLowerCase().includes(termino) || 
-        item.municipio.toLowerCase().includes(termino)
+        item.Centro?.toLowerCase().includes(termino) || 
+        item.Estado?.toLowerCase().includes(termino) || 
+        item.Municipio?.toLowerCase().includes(termino)
     );
-    
     renderizar(filtrados);
 });
 
 function renderizar(datos) {
-    const contenedor = document.getElementById('contenedor-refugios'); 
-    if (!contenedor) return; 
-
-    contenedor.innerHTML = ''; 
-
-    if (datos.length === 0) {
-        contenedor.innerHTML = '<p class="text-center text-gray-500">No se encontraron resultados.</p>';
-        return;
-    }
+    const contenedor = document.getElementById('contenedor-refugios');
+    if (!contenedor) return;
+    contenedor.innerHTML = '';
 
     datos.forEach(item => {
         const tarjeta = document.createElement('div');
-        tarjeta.className = "p-5 bg-white rounded-xl shadow-md hover:shadow-lg transition-all duration-300 mb-4 border-l-4 border-blue-500"; 
+        tarjeta.className = "p-5 bg-white rounded-xl shadow-md mb-4 border-l-4 border-blue-500";
         
         tarjeta.innerHTML = `
-            <h2 class="text-xl font-bold text-gray-800">${item.nombre}</h2>
-            <p class="text-sm text-gray-600 mt-1">📍 ${item.ubicacion} - ${item.municipio}</p>
-            <div class="mt-4 flex gap-2">
-                <span class="px-3 py-1 text-xs rounded-full font-semibold ${item.agua?.toLowerCase() === 'si' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}">Agua</span>
-                <span class="px-3 py-1 text-xs rounded-full font-semibold ${item.comida?.toLowerCase() === 'si' ? 'bg-yellow-100 text-yellow-700' : 'bg-red-100 text-red-700'}">Comida</span>
-                <span class="px-3 py-1 text-xs rounded-full font-semibold ${item.medicinas?.toLowerCase() === 'si' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}">Medicinas</span>
+            <h2 class="text-xl font-bold text-gray-800">${item.Centro}</h2>
+            <p class="text-sm text-gray-600">📍 ${item.Ubicacion} - ${item.Municipio}, ${item.Estado}</p>
+            <div class="mt-3 grid grid-cols-2 gap-2 text-sm">
+                <p>💧 <b>Agua:</b> ${item.Agua}</p>
+                <p>🥪 <b>C. No perecedera:</b> ${item.ComidaNP}</p>
+                <p>🍲 <b>C. Preparada:</b> ${item.ComidaP}</p>
+                <p>💊 <b>Medicinas:</b> ${item.Medicinas}</p>
+                <p>😷 <b>Tapabocas:</b> ${item.Tapabocas}</p>
+                <p>⛺ <b>Carpas:</b> ${item.Carpas}</p>
+                <p>🛏️ <b>Cama:</b> ${item.Cama}</p>
+                <p>🧼 <b>Higiene:</b> ${item.Higiene}</p>
+                <p>👕 <b>Ropa:</b> ${item.Ropa}</p>
+                <p>🛍️ <b>Bolsas:</b> ${item.Bolsas}</p>
+                <p>🐾 <b>Mascota:</b> ${item.Mascota}</p>
+                <p>📯 <b>Silbatos:</b> ${item.Silbatos}</p>
+                <p>✏️ <b>Materiales:</b> ${item.Materiales}</p>
             </div>
-            <p class="text-xs text-gray-400 mt-3 text-right">Actualizado: ${item.fecha_actualizacion || 'N/A'}</p>
         `;
         contenedor.appendChild(tarjeta);
     });
