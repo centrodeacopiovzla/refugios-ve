@@ -16,7 +16,7 @@ async function cargarDatos() {
                 
                 return { 
                     centro, estado, municipio, ubicacion, agua, comidaNP, comidaP, medicinas, tapabocas, 
-                    carpas, cama, higiene, ropa, bolsas, mascota, silbato, materiales, fecha 
+                    carpas, cama, higiene, ropa, bolsas, mascota, silbato, materiales, fecha, 
                 };
             });
 
