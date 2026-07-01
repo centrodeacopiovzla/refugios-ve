@@ -12,11 +12,11 @@ async function cargarDatos() {
             .filter(fila => fila.trim() !== "")
             .map(fila => {
                 // Estas son las 17 columnas que definiste, en el orden exacto
-                const [centro, estado, municipio, ubicacion, agua, comidaNP, comidaP, medicinas, tapabocas, carpas, cama, higiene, ropa, bolsas, mascota, silbato, materiales] = fila.split(',');
+                const [centro, estado, municipio, ubicacion, agua, comidaNP, comidaP, medicinas, tapabocas, carpas, cama, higiene, ropa, bolsas, mascota, silbato, papeleria] = fila.split(',');
                 
                 return { 
                     centro, estado, municipio, ubicacion, agua, comidaNP, comidaP, medicinas, tapabocas, 
-                    carpas, cama, higiene, ropa, bolsas, mascota, silbato, materiales, 
+                    carpas, cama, higiene, ropa, bolsas, mascota, silbato, papeleria, 
                 };
             });
 
@@ -52,8 +52,8 @@ function renderizar(datos) {
             <p class="text-sm text-gray-600">📍 ${item.ubicacion} - ${item.municipio}, ${item.estado}</p>
             <div class="mt-3 grid grid-cols-2 gap-2 text-sm text-gray-700">
                 <p>💧 <b>Agua:</b> ${item.agua}</p>
-                <p>🥪 <b>C. NO Perecedera:</b> ${item.comidaNP}</p>
-                <p>🍲 <b>C. Preparada:</b> ${item.comidaP}</p>
+                <p>🥪 <b>Comida NO Perecedera:</b> ${item.comidaNP}</p>
+                <p>🍲 <b>Comida Preparada:</b> ${item.comidaP}</p>
                 <p>💊 <b>Medicinas:</b> ${item.medicinas}</p>
                 <p>😷 <b>Tapabocas:</b> ${item.tapabocas}</p>
                 <p>⛺ <b>Carpas:</b> ${item.carpas}</p>
@@ -63,7 +63,7 @@ function renderizar(datos) {
                 <p>🛍️ <b>Bolsas Negra:</b> ${item.bolsas}</p>
                 <p>🐾 <b>Comida Mascota:</b> ${item.mascota}</p>
                 <p>📯 <b>Silbato:</b> ${item.silbato}</p>
-                <p>✏️ <b>Materiales:</b> ${item.materiales}</p>
+                <p>✏️ <b>Papelería:</b> ${item.papeleria}</p>
             </div>
         `;
         contenedor.appendChild(tarjeta);
