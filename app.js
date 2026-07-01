@@ -16,7 +16,7 @@ async function cargarDatos() {
                 
                 return { 
                     centro, estado, municipio, ubicacion, agua, comidaNP, comidaP, medicinas, tapabocas, 
-                    carpas, cama, higiene, ropa, bolsas, mascota, silbato, materiales 
+                    carpas, cama, higiene, ropa, bolsas, mascota, silbato, materiales, fecha 
                 };
             });
 
@@ -64,6 +64,7 @@ function renderizar(datos) {
                 <p>🐾 <b>Comida Mascota:</b> ${item.mascota}</p>
                 <p>📯 <b>Silbato:</b> ${item.silbato}</p>
                 <p>✏️ <b>Materiales:</b> ${item.materiales}</p>
+                <p>✏️ <b>Fecha:</b> ${item.fecha}</p>
             </div>
         `;
         contenedor.appendChild(tarjeta);
