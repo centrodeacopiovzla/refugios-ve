@@ -1,12 +1,17 @@
 const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTe6z13jruVcXbhy2JUxz0dYlE1TFBSl50B55K-a3M5yYGLZCTagIfoZLJxIP-56DSSvLpsfUPIX5TZ/pub?gid=0&single=true&output=csv';
 
+// 1. Variable global para guardar los datos y poder filtrarlos
+let datosGlobales = [];
+
 async function cargarDatos() {
     try {
         const response = await fetch(CSV_URL);
         const texto = await response.text();
         
         const filas = texto.split('\n').slice(1);
-        const datos = filas
+        
+        // 2. Guardamos en la variable global
+        datosGlobales = filas
             .filter(fila => fila.trim() !== "")
             .map(fila => {
                 const [nombre, ubicacion, estado, municipio, agua, comida, medicinas, fecha_actualizacion] = fila.split(',');
@@ -22,7 +27,7 @@ async function cargarDatos() {
                 };
             });
 
-        renderizar(datos);
+        renderizar(datosGlobales);
         
     } catch (error) {
         console.error('Error al conectar con la base de datos:', error);
@@ -30,18 +35,33 @@ async function cargarDatos() {
     }
 }
 
-function renderizar(datos) {
-    // Aquí corregimos el ID para que coincida con tu HTML
-    const contenedor = document.getElementById('contenedor-refugios'); 
+// 3. Lógica del buscador (se activa al escribir)
+document.getElementById('buscador').addEventListener('input', (e) => {
+    const termino = e.target.value.toLowerCase();
     
+    // Filtramos los datos globales según el texto escrito
+    const filtrados = datosGlobales.filter(item => 
+        item.nombre.toLowerCase().includes(termino) || 
+        item.estado.toLowerCase().includes(termino) || 
+        item.municipio.toLowerCase().includes(termino)
+    );
+    
+    renderizar(filtrados);
+});
+
+function renderizar(datos) {
+    const contenedor = document.getElementById('contenedor-refugios'); 
     if (!contenedor) return; 
 
     contenedor.innerHTML = ''; 
 
+    if (datos.length === 0) {
+        contenedor.innerHTML = '<p class="text-center text-gray-500">No se encontraron resultados.</p>';
+        return;
+    }
+
     datos.forEach(item => {
         const tarjeta = document.createElement('div');
-        
-        // Estilos mejorados
         tarjeta.className = "p-5 bg-white rounded-xl shadow-md hover:shadow-lg transition-all duration-300 mb-4 border-l-4 border-blue-500"; 
         
         tarjeta.innerHTML = `
