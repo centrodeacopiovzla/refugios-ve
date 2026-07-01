@@ -49,7 +49,7 @@ function renderizar(datos) {
         
         tarjeta.innerHTML = `
             <h2 class="text-xl font-bold text-gray-800">${item.centro}</h2>
-            <p class="text-sm text-gray-600">📍 ${item.ubicacion} - ${item.municipio}, ${item.estado}</p>
+            <p class="text-sm text-gray-600">📍 Ubicación: ${item.ubicacion} - ${item.municipio}, ${item.estado}</p>
             <div class="mt-3 grid grid-cols-2 gap-2 text-sm text-gray-700">
                 <p>💧 <b>Agua:</b> ${item.agua}</p>
                 <p>🥪 <b>Comida NO Perecedera:</b> ${item.comidaNP}</p>
